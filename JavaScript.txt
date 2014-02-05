@@ -1,0 +1,93 @@
+//----AUDIO-----
+var audio = document.getElementById('audio');
+
+    $('#play').click(function(){
+        audio.play();       
+    });
+
+   $('#pause').click(function(){
+        audio.pause();  
+    });
+
+//-------Location------
+   
+//---Current----
+var mapProp={
+    zoom:5,
+    mapTypeId:'roadmap'
+};
+
+
+    
+//var map1=new google.maps.Map($('#map1')[0], mapProp);
+var map1=new google.maps.Map(
+  document.getElementById("map1"),mapProp);
+var markers = [];
+if(navigator.geolocation) {
+   navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+
+      var infowindow = new google.maps.InfoWindow({
+        map: map1,
+        position: pos,
+       
+ });
+    map1.setCenter(pos);
+        
+        
+        var marker=new google.maps.Marker({
+  position:pos,
+  });
+
+marker.setMap(map1);
+
+    }, function() {
+      handleNoGeolocation(true);
+    });
+  
+  }
+
+
+//----direction----
+var button = document.getElementById('button');
+//var str = $( "#from" ).text();
+//var b= $("#to").text();
+
+var directionDisplay;
+var directionsService = new google.maps.DirectionsService();     
+var map2;
+$('#button').click(function(){
+    
+    directionsDisplay = new google.maps.DirectionsRenderer();        
+    var center = new google.maps.LatLng(0, 0);    
+    var myOptions =
+    {
+            zoom:7,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            center: center
+    }
+    map2 = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    directionsDisplay.setMap(map2);
+    var start = $( "#from" ).val();     
+    var end = $( "#to" ).val();  
+    var request =
+    {
+            origin:start,
+        destination:end,
+            travelMode: google.maps.DirectionsTravelMode.WALKING          
+    };
+    directionsService.route(request, function(response, status)
+    {
+            if (status == google.maps.DirectionsStatus.OK) 
+            {
+            directionsDisplay.setDirections(response);         
+            }
+    });
+});
+    
+button.addEventListener('click', onClick, false);
+
+//---------Graphics--------------
+$("div").animate({left:'600px'});
+    
